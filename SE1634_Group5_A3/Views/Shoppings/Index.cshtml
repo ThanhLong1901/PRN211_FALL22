@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SE1634_Group5_A3.Models.Album>
+@*@model PageList<SE1634_Group5_A3.Models.Album>*@
+<h1>Index</h1>
+<form asp-action="Index" method="get">
+    Gemre name: <select name="genreID" asp-items="ViewBag.GenreIDs"></select>
+    Find by title: <input type="text" name="currentTitle" value="@ViewBag.CurrentTitle" />
+    <input type="submit" value="Search" class="btn btn-primary" />
+</form>
+<div class="row">
+    @foreach(var item in Model){
+    <div class="col-md-4">
+        <div style="width:80%; margin: auto;height:400px;">
+            <div style="display:flex;">
+                <img src="~/E/Images/placeholder.gif" style="width:250px; height:250px"/>
+                <div style="margin: auto">
+                    $@Html.DisplayFor(modelItem => item.Price)
+                </div>
+            </div>
+            <div>
+                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(modelItem => item.AlbumUrl)
+            </div>
+            <div>
+                @Html.DisplayFor(modelItem => item.Artist.Name)
+            </div>
+            <div>
+                @Html.DisplayFor(modelItem => item.Genre.Name)
+            </div>
+        </div>
+    </div>
+    }
+</div>
+
+@*@{
+    var pre = !Model.HasPreviousPage ? "disabled" : "";
+    var next = !Model.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" class="btn btn-primary @pre"> 
+    Previous
+</a>
+<a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" class="btn btn-primary @next"> 
+    Next
+</a>*@
+
+

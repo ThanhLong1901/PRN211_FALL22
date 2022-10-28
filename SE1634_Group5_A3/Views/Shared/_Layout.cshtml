@@ -1,0 +1,98 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using SE1634_MVC.Models
+@inject IHttpContextAccessor HttpContextAccessor;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SE1634_Group5_A3</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SE1634_Group5_A3.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MusicStoreMVC</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                @*Khai báo biến*@
+                @{
+                    string UserName = HttpContextAccessor.HttpContext.Session.GetString("UserName") ?? "";      //Gọi UserName của người dùng sau khi đăng nhập
+                    int Role = HttpContextAccessor.HttpContext.Session.GetInt32("Role") ?? 0;                   //Gọi Role của người dùng sau khi đăng nhập
+                    ShoppingCart cart = ShoppingCart.GetCart(HttpContextAccessor.HttpContext);                  //Gọi class ShoppingCart nhằm mục đích để gọi count
+                    int count = cart.GetCount();        //Gọi số lượng sản phẩm có trong Cart
+                }
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Shoppings" asp-action="Index">Shopping</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Shoppings" asp-action="Cart">Cart (@count)</a>
+                        </li>
+                        
+                        @*
+                            Kiểm tra Role của người đăng nhập
+                            Role = 0 => Khách hàng  => Ko hiện Albums
+                            Role = 1 => Admin       => Hiện Albums
+                        *@
+                        @if(Role == 1)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Albums" asp-action="Index">Albums</a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav flex-grow-1" style="max-width: max-content">
+                        @*
+                            Kiểm tra người dùng đã đăng nhập chưa?
+                            Chưa đăng nhập  => Login
+                            Đăng nhập rồi   => Logout(UserName)
+                        *@
+                        @*Người dùng chưa đăng nhập*@
+                        @if(UserName == "")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">Logout (@UserName)</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2022 - MusicStoreMVC - SE1634, Group 5 <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
